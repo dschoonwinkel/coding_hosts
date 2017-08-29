@@ -147,7 +147,12 @@ def launch ():
   def start_switch (event):
     log.debug("Controlling %s" % (event.connection,))
     msg = of.ofp_flow_mod()
-    msg.match = of.ofp_match(dl_type=pkt.ethernet.IP_TYPE, nw_src = "10.0.0.0/24")
+    msg.match = of.ofp_match(dl_type=0x7123, in_port=3)
+    msg.actions.append(of.ofp_action_output(port = of.OFPP_FLOOD))
+    event.connection.send(msg)
+
+    msg = of.ofp_flow_mod()
+    msg.match = of.ofp_match(dl_type=0x7123)
     msg.actions.append(of.ofp_action_output(port = 3))
     event.connection.send(msg)
 
